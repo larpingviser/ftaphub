@@ -1,0 +1,196 @@
+--[[
+	FTAP HUB
+	UI: Obsidian (Linoria fork)
+]]
+
+local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
+local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
+local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
+local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+
+local Options = Library.Options
+local Toggles = Library.Toggles
+
+Library.ForceCheckbox = false
+Library.ShowToggleFrameInKeybinds = true
+
+-- =========================
+--  SCRIPT LIST
+-- =========================
+local Scripts = {
+	-- Original 20 + Tickler
+	["Tickler"]                = "https://raw.githubusercontent.com/mohammedmaltah02-collab/larpbitch/refs/heads/main/tickler.lua",
+	["Vortex"]                 = "https://rawscripts.net/raw/Fling-Things-and-People-FTAP-Vortex-Hub-228539",
+	["Nil'e"]                  = "https://raw.githubusercontent.com/dray29471-del/VIZER5/refs/heads/main/vizer5.lua",
+	["NeverLose"]              = "https://pastefy.app/ATPWcoEb/raw",
+	["Blitz"]                  = "https://pastefy.app/BHQ1xXjK/raw",
+	["Vizer"]                  = "https://raw.githubusercontent.com/dray29471-del/VIZERbest/refs/heads/main/VIZERbest.lua",
+	["Oblivion"]               = "https://gist.githubusercontent.com/safonovmaksima-commits/65ca3fad4743c91ebbf5fadf5bebe066/raw/ed95e5a9b06de9b134422c0531e3aa406cd9af7b/vhr222",
+	["Vizer 2"]                = "https://raw.githubusercontent.com/dray29471-del/vizerOBSIDIAN/refs/heads/main/VIZERobsidian.lua",
+	["Bloody v2"]              = "https://raw.githubusercontent.com/celestialteam/youhateme/refs/heads/main/BloodyPremiumCrack.lua",
+	["Pluton"]                 = "https://doitenroi.win/paste/A1x9Ra/raw",
+	["Poop Hub Premium"]       = "https://doitenroi.win/paste/dOiycS/raw",
+	["Lunar"]                  = "https://pastefy.app/bscLo4n8/raw",
+	["Unknown Hub (Kotakbas)"] = "https://pastefy.app/LXAlE7iF/raw",
+	["Ragalic"]                = "https://pastefy.app/Chk68Dbv/raw",
+	["Rr9"]                    = "https://pastefy.app/aVIt6mOJ/raw",
+	["Allun"]                  = "https://pastefy.app/OrWdkmOz/raw",
+	["Mobile Trigger Bot"]     = "https://pastefy.app/srfwxE0M/raw",
+	["Fanatic FTAP"]           = "https://pastefy.app/oEI0KErG/raw",
+	["Fatalytyz"]              = "https://pastefy.app/q8DLEIpm/raw",
+	["Fosfor Visuals"]         = "https://pastefy.app/I0P2dXal/raw",
+	["Tokra"]                  = "https://pastefy.app/ccBEGiz7/raw",
+
+	-- New 14
+	["Farther Reach"]          = "https://scriptblox.com/raw/Fling-Things-and-People-Bilal-script-tung-tung-sahur-230495",
+	["Xeron v4 Mobile"]        = "https://scriptblox.com/raw/Fling-Things-and-People-XERON-V4-FTAP-229758",
+	["FTAP Hub Free"]          = "https://scriptblox.com/raw/Fling-Things-and-People-FTAP-Hub-79081",
+	["Ragnith Free"]           = "https://scriptblox.com/raw/Fling-Things-and-People-Ragnith-231115",
+	["RandomFlings"]           = "https://scriptblox.com/raw/Fling-Things-and-People-RandomFlings-231159",
+	["GGOG"]                   = "https://scriptblox.com/raw/Fling-Things-and-People-GGOG-Script-165953",
+	["RuHub"]                  = "https://gitlab.com/cooldawghaha/gitlabswitch/-/raw/main/RuHubFTAP.lua",
+	["The Worst"]              = "https://scriptblox.com/raw/Fling-Things-and-People-The-Worst-free-236892",
+	["Script Bomb VietNam"]    = "https://raw.githubusercontent.com/dw9118791-tech/Trinhthiennhan-/refs/heads/main/Trinhthiennhan",
+	["Resonance Crack"]        = "https://orrxl4-protector.com/api/raw?id=w8246kko",
+	["FTAP Client"]            = "https://scriptblox.com/raw/Fling-Things-and-People-FTAP-Client-170248",
+	["JoyHub"]                 = "https://orrxl4-protector.com/api/raw?id=svrilwy4",
+	["PoopHub Premium"]        = "https://orrxl4-protector.com/api/raw?id=pg0jljfo",
+	["Savitar"]                = "https://paste.c-net.org/FleetDisgrace",
+}
+
+-- =========================
+--  UNIVERSAL LOADER
+-- =========================
+local function RunScript(name, url)
+	Library:Notify({
+		Title = "FTAP HUB",
+		Description = "Loading: " .. name,
+		Time = 3,
+	})
+
+	task.spawn(function()
+		loadstring(game:HttpGet(url))()
+	end)
+end
+
+-- =========================
+--  WINDOW
+-- =========================
+local Window = Library:CreateWindow({
+	Title = "FTAP HUB",
+	Footer = "v1.0",
+	Icon = 95816097006870,
+	NotifySide = "Right",
+	ShowCustomCursor = true,
+})
+
+local Tabs = {
+	Scripts = Window:AddTab("Scripts", "code"),
+	["UI Settings"] = Window:AddTab("UI Settings", "settings"),
+}
+
+-- =========================
+--  SCRIPTS TAB
+-- =========================
+local ScriptsGroup = Tabs.Scripts:AddLeftGroupbox("Available Scripts", "folder")
+
+local names = {}
+for name in pairs(Scripts) do table.insert(names, name) end
+table.sort(names)
+
+for _, name in ipairs(names) do
+	ScriptsGroup:AddButton({
+		Text = name,
+		Func = function()
+			RunScript(name, Scripts[name])
+		end,
+		Tooltip = "Execute " .. name,
+	})
+end
+
+ScriptsGroup:AddDivider()
+
+ScriptsGroup:AddButton({
+	Text = "▶ Run All",
+	Func = function()
+		for _, name in ipairs(names) do
+			RunScript(name, Scripts[name])
+			task.wait(0.5)
+		end
+	end,
+	Tooltip = "Runs every script",
+})
+
+-- =========================
+--  UI SETTINGS TAB
+-- =========================
+local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox("Menu", "wrench")
+
+MenuGroup:AddToggle("KeybindMenuOpen", {
+	Default = Library.KeybindFrame.Visible,
+	Text = "Open Keybind Menu",
+	Callback = function(value)
+		Library.KeybindFrame.Visible = value
+	end,
+})
+
+MenuGroup:AddToggle("ShowCustomCursor", {
+	Text = "Custom Cursor",
+	Default = true,
+	Callback = function(Value)
+		Library.ShowCustomCursor = Value
+	end,
+})
+
+MenuGroup:AddDropdown("NotificationSide", {
+	Values = { "Left", "Right" },
+	Default = "Right",
+	Text = "Notification Side",
+	Callback = function(Value)
+		Library:SetNotifySide(Value)
+	end,
+})
+
+MenuGroup:AddDropdown("DPIDropdown", {
+	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
+	Default = "100%",
+	Text = "DPI Scale",
+	Callback = function(Value)
+		Value = Value:gsub("%%", "")
+		local DPI = tonumber(Value)
+		Library:SetDPIScale(DPI)
+	end,
+})
+
+MenuGroup:AddDivider()
+
+MenuGroup:AddLabel("Menu bind")
+	:AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
+
+MenuGroup:AddButton("Unload", function()
+	Library:Unload()
+end)
+
+Library.ToggleKeybind = Options.MenuKeybind
+
+-- =========================
+--  ADDONS
+-- =========================
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
+
+ThemeManager:SetFolder("FTAPHub")
+SaveManager:SetFolder("FTAPHub/specific-game")
+SaveManager:SetSubFolder("specific-place")
+
+SaveManager:BuildConfigSection(Tabs["UI Settings"])
+ThemeManager:ApplyToTab(Tabs["UI Settings"])
+
+SaveManager:LoadAutoloadConfig()
+
+Library:OnUnload(function()
+	print("FTAP HUB unloaded!")
+end)
