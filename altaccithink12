@@ -1,3 +1,11 @@
+--[[
+	FTAP HUB
+	Key: larpviser
+]]
+
+-- =========================
+--  🔑 KEY GATE
+-- =========================
 local VALID_KEYS = {
 	["larpviser"] = true,
 }
@@ -106,7 +114,7 @@ if not hasSavedKey() then
 		end
 	end)
 
-	return -- stops here until key is valid
+	return
 end
 
 -- =========================
@@ -395,6 +403,58 @@ MenuGroup:AddToggle("ShowCustomCursor", {
 	Callback = function(v) Library.ShowCustomCursor = v end,
 })
 
+-- =========================
+--  MOUSE UNLOCK  🖱️
+-- =========================
+local UserInputService = game:GetService("UserInputService")
+local mouseUnlockConn = nil
+
+local function startMouseUnlock()
+	if mouseUnlockConn then mouseUnlockConn:Disconnect() end
+	mouseUnlockConn = RunService.RenderStepped:Connect(function()
+		pcall(function()
+			UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+			UserInputService.MouseIconEnabled = true
+		end)
+	end)
+end
+
+local function stopMouseUnlock()
+	if mouseUnlockConn then
+		mouseUnlockConn:Disconnect()
+		mouseUnlockConn = nil
+	end
+	pcall(function()
+		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+		UserInputService.MouseIconEnabled = true
+	end)
+end
+
+MenuGroup:AddToggle("MouseUnlock", {
+	Text = "🔓 Unlock Mouse",
+	Tooltip = "Releases cursor lock so you can move it freely, even with Roblox menu open",
+	Default = false,
+	Callback = function(state)
+		if state then
+			startMouseUnlock()
+			Library:Notify({ Title = "Mouse", Description = "Unlocked", Time = 2 })
+		else
+			stopMouseUnlock()
+			Library:Notify({ Title = "Mouse", Description = "Locked (default)", Time = 2 })
+		end
+	end,
+}):AddKeyPicker("MouseUnlockBind", {
+	Default = "RightControl",
+	Mode = "Toggle",
+	Text = "Mouse Unlock",
+	Callback = function()
+		Toggles.MouseUnlock:SetValue(not Toggles.MouseUnlock.Value)
+	end,
+})
+
+-- =========================
+--  MENU LAYOUT CONTINUED
+-- =========================
 MenuGroup:AddDropdown("NotificationSide", {
 	Values = { "Left", "Right" }, Default = "Right",
 	Text = "Notification Side",
@@ -415,7 +475,10 @@ MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", {
 	Default = "RightShift", NoUI = true, Text = "Menu keybind",
 })
 
-MenuGroup:AddButton("Unload", function() Library:Unload() end)
+MenuGroup:AddButton("Unload", function()
+	stopMouseUnlock()
+	Library:Unload()
+end)
 
 Library.ToggleKeybind = Options.MenuKeybind
 
@@ -433,5 +496,6 @@ ThemeManager:ApplyToTab(Tabs["UI Settings"])
 SaveManager:LoadAutoloadConfig()
 
 Library:OnUnload(function()
+	stopMouseUnlock()
 	print("FTAP HUB unloaded!")
 end)
