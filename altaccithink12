@@ -1,8 +1,117 @@
---[[
-	FTAP HUB
-	UI: Obsidian (Linoria fork)
-]]
+local VALID_KEYS = {
+	["larpviser"] = true,
+}
 
+local KEY_FILE = "ftaphub_key.txt"
+
+local function hasSavedKey()
+	if isfile and isfile(KEY_FILE) then
+		return VALID_KEYS[readfile(KEY_FILE)] == true
+	end
+	return false
+end
+
+local function saveKey(key)
+	if writefile then
+		writefile(KEY_FILE, key)
+	end
+end
+
+if not hasSavedKey() then
+	local Players = game:GetService("Players")
+	local plr = Players.LocalPlayer
+
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "FTAPKeyGate"
+	gui.ResetOnSpawn = false
+	gui.IgnoreGuiInset = true
+	gui.Parent = plr:WaitForChild("PlayerGui")
+
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.new(0, 420, 0, 220)
+	frame.Position = UDim2.new(0.5, -210, 0.5, -110)
+	frame.BackgroundColor3 = Color3.fromRGB(22, 22, 28)
+	frame.BorderSizePixel = 0
+	frame.Parent = gui
+	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+	Instance.new("UIStroke", frame).Color = Color3.fromRGB(60, 60, 75)
+
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(1, 0, 0, 42)
+	title.BackgroundTransparency = 1
+	title.Text = "FTAP HUB"
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 22
+	title.Parent = frame
+
+	local subtitle = Instance.new("TextLabel")
+	subtitle.Size = UDim2.new(1, -20, 0, 24)
+	subtitle.Position = UDim2.new(0, 10, 0, 42)
+	subtitle.BackgroundTransparency = 1
+	subtitle.Text = "Enter your key to unlock"
+	subtitle.TextColor3 = Color3.fromRGB(170, 170, 180)
+	subtitle.Font = Enum.Font.Gotham
+	subtitle.TextSize = 13
+	subtitle.Parent = frame
+
+	local box = Instance.new("TextBox")
+	box.Size = UDim2.new(1, -40, 0, 42)
+	box.Position = UDim2.new(0, 20, 0, 85)
+	box.BackgroundColor3 = Color3.fromRGB(38, 38, 46)
+	box.BorderSizePixel = 0
+	box.Text = ""
+	box.PlaceholderText = "Key..."
+	box.TextColor3 = Color3.fromRGB(255, 255, 255)
+	box.PlaceholderColor3 = Color3.fromRGB(120, 120, 130)
+	box.Font = Enum.Font.Gotham
+	box.TextSize = 14
+	box.ClearTextOnFocus = false
+	box.Parent = frame
+	Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
+
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(1, -40, 0, 42)
+	button.Position = UDim2.new(0, 20, 0, 145)
+	button.BackgroundColor3 = Color3.fromRGB(90, 140, 90)
+	button.BorderSizePixel = 0
+	button.Text = "Unlock"
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 15
+	button.Parent = frame
+	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
+
+	button.MouseButton1Click:Connect(function()
+		local entered = box.Text
+		if VALID_KEYS[entered] then
+			saveKey(entered)
+			button.Text = "Loading..."
+			button.BackgroundColor3 = Color3.fromRGB(70, 110, 70)
+			task.wait(0.3)
+			gui:Destroy()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/larpingviser/ftaphub/refs/heads/main/altaccithink12"))()
+		else
+			box.Text = ""
+			box.PlaceholderText = "Invalid key"
+			button.BackgroundColor3 = Color3.fromRGB(150, 70, 70)
+			task.wait(1)
+			button.BackgroundColor3 = Color3.fromRGB(90, 140, 90)
+		end
+	end)
+
+	box.FocusLost:Connect(function(enter)
+		if enter then
+			button.MouseButton1Click:Fire()
+		end
+	end)
+
+	return -- stops here until key is valid
+end
+
+-- =========================
+--  🔓 HUB STARTS HERE
+-- =========================
 local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
@@ -18,7 +127,6 @@ Library.ShowToggleFrameInKeybinds = true
 --  SCRIPT LIST
 -- =========================
 local Scripts = {
-	-- Original 20 + Tickler
 	["Tickler"]                = "https://raw.githubusercontent.com/mohammedmaltah02-collab/larpbitch/refs/heads/main/tickler.lua",
 	["Vortex"]                 = "https://rawscripts.net/raw/Fling-Things-and-People-FTAP-Vortex-Hub-228539",
 	["Nil'e"]                  = "https://raw.githubusercontent.com/dray29471-del/VIZER5/refs/heads/main/vizer5.lua",
@@ -40,8 +148,6 @@ local Scripts = {
 	["Fatalytyz"]              = "https://pastefy.app/q8DLEIpm/raw",
 	["Fosfor Visuals"]         = "https://pastefy.app/I0P2dXal/raw",
 	["Tokra"]                  = "https://pastefy.app/ccBEGiz7/raw",
-
-	-- New 14
 	["Farther Reach"]          = "https://scriptblox.com/raw/Fling-Things-and-People-Bilal-script-tung-tung-sahur-230495",
 	["Xeron v4 Mobile"]        = "https://scriptblox.com/raw/Fling-Things-and-People-XERON-V4-FTAP-229758",
 	["FTAP Hub Free"]          = "https://scriptblox.com/raw/Fling-Things-and-People-FTAP-Hub-79081",
@@ -86,6 +192,7 @@ local Window = Library:CreateWindow({
 
 local Tabs = {
 	Scripts = Window:AddTab("Scripts", "code"),
+	Kick = Window:AddTab("Kick", "sword"),
 	["UI Settings"] = Window:AddTab("UI Settings", "settings"),
 }
 
@@ -122,6 +229,157 @@ ScriptsGroup:AddButton({
 })
 
 -- =========================
+--  KICK OWNERSHIP TAB
+-- =========================
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local GrabEvents = ReplicatedStorage:WaitForChild("GrabEvents")
+local SetNetworkOwner = GrabEvents:WaitForChild("SetNetworkOwner")
+local DestroyGrabLine = GrabEvents:WaitForChild("DestroyGrabLine")
+local CharacterEvents = ReplicatedStorage:WaitForChild("CharacterEvents")
+local Struggle = CharacterEvents:WaitForChild("Struggle")
+
+local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+LocalPlayer.CharacterAdded:Connect(function(c) char = c end)
+
+local function GetHRH(c)
+	if not c then return nil end
+	return c:FindFirstChild("Head"),
+		c:FindFirstChild("HumanoidRootPart"),
+		c:FindFirstChild("Humanoid")
+end
+
+local function Own(part)
+	if not part then return nil end
+	SetNetworkOwner:FireServer(part, part.CFrame)
+	local owner = part:FindFirstChild("PartOwner")
+	if owner and owner.Value == LocalPlayer.Name then return owner end
+	return nil
+end
+
+local function UnGrab(part)
+	if part then DestroyGrabLine:FireServer(part) end
+end
+
+local function Teleport(part, cf, offset)
+	if part and cf and offset then
+		part.CFrame = cf * offset
+		part.Velocity = Vector3.zero
+		part.RotVelocity = Vector3.zero
+	end
+end
+
+local activeKicks = {}
+
+local function KickPlayer(target)
+	if not target or target == LocalPlayer or activeKicks[target] then return end
+	local _, myHRP, myHum = GetHRH(char)
+	if not myHRP or not myHum or myHum.Health <= 0 then return end
+	local tHead, tHRP, tHum = GetHRH(target.Character)
+	if not tHead or not tHRP or not tHum or tHum.Health <= 0 then return end
+
+	activeKicks[target] = true
+	task.spawn(function()
+		local startCF = myHRP.CFrame
+		local now = tick()
+		local owned
+
+		while tick() - now < 1 do
+			RunService.Heartbeat:Wait()
+			Teleport(myHRP, tHRP.CFrame, CFrame.new(0, -8, 0))
+			owned = Own(tHead)
+			if owned or not tHum.Parent or tHum.Health <= 0 then break end
+		end
+
+		Teleport(myHRP, startCF, CFrame.new(0, 0, 0))
+
+		local kickStart = tick()
+		while tick() - kickStart < 5 do
+			RunService.Heartbeat:Wait()
+			if not myHum or myHum.Health <= 0 then break end
+			if not tHum or tHum.Health <= 0 then break end
+			if not tHead or not tHead.Parent then break end
+
+			Own(tHead)
+			Own(tHead)
+			if myHum.MoveDirection == Vector3.zero then
+				UnGrab(tHead)
+			end
+			Struggle:FireServer()
+		end
+
+		activeKicks[target] = nil
+	end)
+end
+
+local KickGroup = Tabs.Kick:AddLeftGroupbox("Ownership Kick", "shield")
+
+KickGroup:AddButton({
+	Text = "⚡ Kick Everyone",
+	Func = function()
+		local count = 0
+		for _, p in ipairs(Players:GetPlayers()) do
+			if p ~= LocalPlayer then
+				KickPlayer(p)
+				count += 1
+			end
+		end
+		Library:Notify({
+			Title = "Kick",
+			Description = "Kicking " .. count .. " players",
+			Time = 3,
+		})
+	end,
+})
+
+KickGroup:AddDivider()
+
+KickGroup:AddDropdown("TargetPlayer", {
+	SpecialType = "Player",
+	ExcludeLocalPlayer = true,
+	Text = "Kick Specific Player",
+})
+
+KickGroup:AddButton({
+	Text = "⚡ Kick Selected",
+	Func = function()
+		local target = Options.TargetPlayer.Value
+		if not target then
+			Library:Notify({ Title = "Kick", Description = "No player selected", Time = 3 })
+			return
+		end
+		KickPlayer(target)
+	end,
+})
+
+KickGroup:AddDivider()
+
+KickGroup:AddToggle("AutoKick", {
+	Text = "Auto Kick (instant)",
+	Default = false,
+})
+
+local autoKickConn
+Toggles.AutoKick:OnChanged(function()
+	if Toggles.AutoKick.Value then
+		autoKickConn = RunService.Heartbeat:Connect(function()
+			if not Toggles.AutoKick.Value then return end
+			for _, p in ipairs(Players:GetPlayers()) do
+				if p ~= LocalPlayer and not activeKicks[p] then
+					local _, _, h = GetHRH(p.Character)
+					if h and h.Health > 0 then KickPlayer(p) end
+				end
+			end
+		end)
+	else
+		if autoKickConn then autoKickConn:Disconnect() end
+	end
+end)
+
+-- =========================
 --  UI SETTINGS TAB
 -- =========================
 local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox("Menu", "wrench")
@@ -129,47 +387,35 @@ local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox("Menu", "wrench")
 MenuGroup:AddToggle("KeybindMenuOpen", {
 	Default = Library.KeybindFrame.Visible,
 	Text = "Open Keybind Menu",
-	Callback = function(value)
-		Library.KeybindFrame.Visible = value
-	end,
+	Callback = function(v) Library.KeybindFrame.Visible = v end,
 })
 
 MenuGroup:AddToggle("ShowCustomCursor", {
-	Text = "Custom Cursor",
-	Default = true,
-	Callback = function(Value)
-		Library.ShowCustomCursor = Value
-	end,
+	Text = "Custom Cursor", Default = true,
+	Callback = function(v) Library.ShowCustomCursor = v end,
 })
 
 MenuGroup:AddDropdown("NotificationSide", {
-	Values = { "Left", "Right" },
-	Default = "Right",
+	Values = { "Left", "Right" }, Default = "Right",
 	Text = "Notification Side",
-	Callback = function(Value)
-		Library:SetNotifySide(Value)
-	end,
+	Callback = function(v) Library:SetNotifySide(v) end,
 })
 
 MenuGroup:AddDropdown("DPIDropdown", {
-	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
-	Default = "100%",
+	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" }, Default = "100%",
 	Text = "DPI Scale",
-	Callback = function(Value)
-		Value = Value:gsub("%%", "")
-		local DPI = tonumber(Value)
-		Library:SetDPIScale(DPI)
+	Callback = function(v)
+		v = v:gsub("%%", "")
+		Library:SetDPIScale(tonumber(v))
 	end,
 })
 
 MenuGroup:AddDivider()
+MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", {
+	Default = "RightShift", NoUI = true, Text = "Menu keybind",
+})
 
-MenuGroup:AddLabel("Menu bind")
-	:AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
-
-MenuGroup:AddButton("Unload", function()
-	Library:Unload()
-end)
+MenuGroup:AddButton("Unload", function() Library:Unload() end)
 
 Library.ToggleKeybind = Options.MenuKeybind
 
@@ -178,17 +424,12 @@ Library.ToggleKeybind = Options.MenuKeybind
 -- =========================
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
-
 SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
-
 ThemeManager:SetFolder("FTAPHub")
-SaveManager:SetFolder("FTAPHub/specific-game")
-SaveManager:SetSubFolder("specific-place")
-
+SaveManager:SetFolder("FTAPHub/configs")
 SaveManager:BuildConfigSection(Tabs["UI Settings"])
 ThemeManager:ApplyToTab(Tabs["UI Settings"])
-
 SaveManager:LoadAutoloadConfig()
 
 Library:OnUnload(function()
